@@ -35,6 +35,16 @@ function renderSelection() {
     startButton.disabled = state.selectedStreamers.length === 0;
 
     streamersList.innerHTML = '';
+
+    // Empty state : message d'accueil quand la liste est vide
+    if (state.selectedStreamers.length === 0) {
+        const emptyState = document.createElement('li');
+        emptyState.className = 'empty-state';
+        emptyState.textContent = 'Aucun streamer ajouté. Commencez par taper un pseudo ci-dessus.';
+        streamersList.appendChild(emptyState);
+        return;
+    }
+
     state.selectedStreamers.forEach(pseudo => {
         const li = document.createElement('li');
         li.innerHTML = `

@@ -12,7 +12,38 @@ body {
     min-height: 100vh;
     padding: 2rem;
 }
+/* === Transitions === */
+#selection-screen,
+#viewer-screen {
+    animation: fadeIn 0.3s ease-out;
+}
 
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animations de la liste des streamers */
+#streamers-list li {
+    animation: slideIn 0.2s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
 /* === Header === */
 header {
     text-align: center;
@@ -88,7 +119,7 @@ button:disabled {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /* === Selected list === */
@@ -276,4 +307,13 @@ button:disabled {
 
 .stream-container.active .stream-label {
     background-color: #9147ff;
+}
+/* === Empty state === */
+#streamers-list .empty-state {
+    background-color: transparent;
+    color: #6e6e73;
+    font-style: italic;
+    text-align: center;
+    padding: 1rem;
+    justify-content: center;
 }
