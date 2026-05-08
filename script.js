@@ -5,7 +5,7 @@ const state = {
     activePseudo: null    // Pseudo du stream actuellement audible
 };
 
-const MAX_STREAMERS = 4;
+const MAX_STREAMERS = 8;
 
 // === Références DOM ===
 const selectionScreen = document.getElementById('selection-screen');
@@ -19,6 +19,7 @@ const streamersList = document.getElementById('streamers-list');
 const counter = document.getElementById('counter');
 const errorMessage = document.getElementById('error-message');
 const streamsGrid = document.getElementById('streams-grid');
+const perfWarning = document.getElementById('perf-warning');
 
 // === Fonctions UI === //
 
@@ -34,9 +35,16 @@ function renderSelection() {
     counter.textContent = state.selectedStreamers.length;
     startButton.disabled = state.selectedStreamers.length === 0;
 
+    // Avertissement perf si on dépasse 4 streams
+    if (state.selectedStreamers.length > 4) {
+        perfWarning.classList.remove('hidden');
+    } else {
+        perfWarning.classList.add('hidden');
+    }
+
     streamersList.innerHTML = '';
 
-    // Empty state : message d'accueil quand la liste est vide
+    // Empty state...
     if (state.selectedStreamers.length === 0) {
         const emptyState = document.createElement('li');
         emptyState.className = 'empty-state';
@@ -54,6 +62,15 @@ function renderSelection() {
         streamersList.appendChild(li);
     });
 }
+
+    state.selectedStreamers.forEach(pseudo => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${pseudo}</span>
+            <button class="remove-button" data-pseudo="${pseudo}">Retirer</button>
+        `;
+        streamersList.appendChild(li);
+    });
 
 // === Fonctions logique sélection === //
 

@@ -243,15 +243,24 @@ button:disabled {
     grid-template-rows: 1fr;
 }
 
-/* 3 streams = 2 en haut + 1 en bas, ou layout 2x2 avec une case vide */
-#streams-grid.count-3 {
+/* 3-4 streams = grille 2x2 */
+#streams-grid.count-3,
+#streams-grid.count-4 {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
 }
 
-/* 4 streams = grille 2x2 parfaite */
-#streams-grid.count-4 {
-    grid-template-columns: 1fr 1fr;
+/* 5-6 streams = grille 3x2 */
+#streams-grid.count-5,
+#streams-grid.count-6 {
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* 7-8 streams = grille 4x2 */
+#streams-grid.count-7,
+#streams-grid.count-8 {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr;
 }
 
@@ -316,4 +325,15 @@ button:disabled {
     text-align: center;
     padding: 1rem;
     justify-content: center;
+}
+/* === Performance warning === */
+.perf-warning {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background-color: rgba(255, 184, 0, 0.1);
+    border-left: 3px solid #ffb800;
+    border-radius: 4px;
+    color: #ffb800;
+    font-size: 0.875rem;
+    line-height: 1.4;
 }

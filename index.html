@@ -22,7 +22,7 @@
     <section id="selection-screen">
         <header>
             <h1>Twitch Multistream Viewer</h1>
-            <p class="subtitle">Regardez jusqu'à 4 streams Twitch simultanément</p>
+            <p class="subtitle">Regardez jusqu'à 8 streams Twitch simultanément</p>
         </header>
 
         <div class="add-streamer">
@@ -37,9 +37,13 @@
 
         <p id="error-message" class="error hidden"></p>
 
-        <div class="selected-list">
-            <h2>Sélection (<span id="counter">0</span>/4)</h2>
+      <div class="selected-list">
+            <h2>Sélection (<span id="counter">0</span>/8)</h2>
             <ul id="streamers-list"></ul>
+            <p id="perf-warning" class="perf-warning hidden">
+                ⚡ Au-delà de 4 streams, des ralentissements peuvent survenir.
+                Une connexion stable et une configuration solide sont recommandées.
+            </p>
         </div>
 
         <button id="start-button" disabled>Lancer le multistream</button>

@@ -1,7 +1,7 @@
 # Twitch Multistream Viewer
 
-> 🇬🇧 Watch up to 4 Twitch streams simultaneously with focused stream selection.
-> 🇫🇷 Regardez jusqu'à 4 streams Twitch simultanément avec sélection de focus.
+> 🇬🇧 Watch up to 8 Twitch streams simultaneously with focused stream selection.
+> 🇫🇷 Regardez jusqu'à 8 streams Twitch simultanément avec sélection de focus.
 
 ![Demo](docs/demo.gif)
 
@@ -17,15 +17,15 @@
 
 ### About
 
-**Twitch Multistream Viewer** is a lightweight web app that lets you watch up to 4 Twitch streams simultaneously on a single page. Originally built to replicate the experience of multiplex broadcasting for esports tournaments, drops events, or watching multiple streamer perspectives in parallel.
+**Twitch Multistream Viewer** is a lightweight web app that lets you watch up to 8 Twitch streams simultaneously on a single page. Originally built to replicate the experience of multiplex broadcasting for esports tournaments, drops events, or watching multiple streamer perspectives in parallel.
 
 The project intentionally stays as a **pure frontend static app** (HTML, CSS, JavaScript only — no backend, no framework) to remain lightweight, fast, and easily deployable on any static host.
 
 ### Features
 
-- 🎯 **Add up to 4 streams** by typing Twitch usernames directly
+- 🎯 **Add up to 8 streams** by typing Twitch usernames directly
 - 🛡️ **Robust input validation**: format check (regex), duplicates, empty fields, max limit
-- 📐 **Adaptive grid layout** that automatically reorganizes for 1, 2, 3, or 4 streams
+- 📐 **Adaptive grid layout** that automatically reorganizes for X streams
 - 🎬 **Native Twitch player embed** with full official controls (play, pause, volume, fullscreen, quality)
 - 🟣 **Visual focus selection**: click any stream to highlight it with a purple border
 - 🔄 **Two-screen navigation**: selection screen ↔ multistream viewer
@@ -92,15 +92,15 @@ Built by [@naakir](https://github.com/naakir).
 
 ### À propos
 
-**Twitch Multistream Viewer** est une application web légère permettant de regarder jusqu'à 4 streams Twitch simultanément sur une même page. Construit à l'origine pour répliquer l'expérience de diffusion multiplex pour les tournois esport, les événements drops, ou pour suivre plusieurs perspectives de streamers en parallèle.
+**Twitch Multistream Viewer** est une application web légère permettant de regarder jusqu'à 8 streams Twitch simultanément sur une même page. Construit à l'origine pour répliquer l'expérience de diffusion multiplex pour les tournois esport, les événements drops, ou pour suivre plusieurs perspectives de streamers en parallèle.
 
 Le projet reste volontairement une **application 100% frontend statique** (HTML, CSS, JavaScript uniquement — sans backend, sans framework) pour rester léger, rapide, et facilement déployable sur n'importe quel hébergement statique.
 
 ### Fonctionnalités
 
-- 🎯 **Ajout jusqu'à 4 streams** en tapant directement les pseudos Twitch
+- 🎯 **Ajout jusqu'à 8 streams** en tapant directement les pseudos Twitch
 - 🛡️ **Validations robustes** : format (regex), doublons, champ vide, limite max
-- 📐 **Grille adaptative** qui se réorganise automatiquement pour 1, 2, 3 ou 4 streams
+- 📐 **Grille adaptative** qui se réorganise automatiquement pour X streams
 - 🎬 **Embed Twitch natif** avec contrôles officiels complets (play, pause, volume, plein écran, qualité)
 - 🟣 **Sélection visuelle de focus** : clique sur un stream pour le mettre en avant avec une bordure violette
 - 🔄 **Navigation à deux écrans** : sélection ↔ visualisation multistream
