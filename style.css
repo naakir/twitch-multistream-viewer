@@ -181,6 +181,50 @@ button:disabled {
     flex-direction: column;
 }
 
+/* Conteneur des streams + tchat */
+#viewer-content {
+    flex: 1;
+    display: flex;
+    gap: 0.5rem;
+    min-height: 0;
+}
+
+/* Quand le tchat est affiché, la grille rétrécit pour lui laisser la place */
+#viewer-content:has(#chat-panel:not(.hidden)) #streams-grid {
+    flex: 1 1 auto;
+}
+
+/* Panneau tchat */
+#chat-panel {
+    width: 340px;
+    min-width: 340px;
+    background-color: #18181b;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    padding: 0.75rem 1rem;
+    background-color: #1f1f23;
+    border-bottom: 1px solid #3a3a3d;
+    color: #efeff1;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+#chat-container {
+    flex: 1;
+    min-height: 0;
+}
+
+#chat-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
 .viewer-header {
     display: flex;
     align-items: center;
@@ -205,7 +249,8 @@ button:disabled {
     background-color: #008f3f;
 }
 
-#back-button {
+#back-button,
+#interact-toggle {
     background-color: #1f1f23;
     color: #efeff1;
     border: 1px solid #3a3a3d;
@@ -213,8 +258,20 @@ button:disabled {
     font-size: 0.875rem;
 }
 
-#back-button:hover:not(:disabled) {
+#back-button:hover:not(:disabled),
+#interact-toggle:hover:not(:disabled) {
     background-color: #3a3a3d;
+}
+
+/* État actif du mode interaction */
+#interact-toggle.active {
+    background-color: #00b050;
+    border-color: #00b050;
+    color: white;
+}
+
+#interact-toggle.active:hover:not(:disabled) {
+    background-color: #008f3f;
 }
 
 .viewer-info {
@@ -228,7 +285,7 @@ button:disabled {
     min-height: 0;
     display: grid;
     gap: 0.5rem;
-    width: 100%;
+    min-width: 0;
 }
 
 /* 1 stream = pleine surface */
@@ -285,10 +342,14 @@ button:disabled {
     top: 0;
     left: 0;
     right: 0;
-    bottom: 50px; /* Laisse la barre de contrôles Twitch accessible */
+    bottom: 40px; /* Laisse la barre de contrôles Twitch accessible */
     z-index: 5;
     cursor: pointer;
     background-color: transparent;
+}
+/* Quand le mode interaction est activé, l'overlay laisse passer les clics */
+body.interact-mode .stream-overlay {
+    pointer-events: none;
 }
 .stream-label {
     position: absolute;
@@ -336,4 +397,26 @@ button:disabled {
     color: #ffb800;
     font-size: 0.875rem;
     line-height: 1.4;
+}
+/* Bouton toggle du tchat */
+#chat-toggle {
+    background-color: #1f1f23;
+    color: #efeff1;
+    border: 1px solid #3a3a3d;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+#chat-toggle:hover:not(:disabled) {
+    background-color: #3a3a3d;
+}
+
+#chat-toggle.active {
+    background-color: #9147ff;
+    border-color: #9147ff;
+    color: white;
+}
+
+#chat-toggle.active:hover:not(:disabled) {
+    background-color: #772ce8;
 }

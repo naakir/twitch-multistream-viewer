@@ -4,6 +4,9 @@ const state = {
     players: [],          // Liste des objets Twitch.Player actifs
     activePseudo: null    // Pseudo du stream actuellement audible
 };
+// On fait jouer un son au lancement du multistream (son léger - fun)
+const launchSound = new Audio('assets/launch-sound.mp3');
+launchSound.volume = 0.15; // Volume modéré 
 
 const MAX_STREAMERS = 8;
 
@@ -20,6 +23,11 @@ const counter = document.getElementById('counter');
 const errorMessage = document.getElementById('error-message');
 const streamsGrid = document.getElementById('streams-grid');
 const perfWarning = document.getElementById('perf-warning');
+const interactToggle = document.getElementById('interact-toggle');
+const chatToggle = document.getElementById('chat-toggle');
+const chatPanel = document.getElementById('chat-panel');
+const chatContainer = document.getElementById('chat-container');
+const chatTitle = document.getElementById('chat-title');
 
 // === Fonctions UI === //
 
@@ -121,6 +129,11 @@ function showSelection() {
     viewerScreen.classList.add('hidden');
     selectionScreen.classList.remove('hidden');
     clearGrid();
+
+    // Reset du mode interaction
+    document.body.classList.remove('interact-mode');
+    interactToggle.textContent = '🖱️ Mode interaction : OFF';
+    interactToggle.classList.remove('active');
 }
 
 // === Fonctions grille de streams === //
@@ -186,6 +199,50 @@ function setActiveStream(pseudo) {
             container.classList.remove('active');
         }
     });
+
+    // Si le tchat est ouvert, le mettre à jour sur le nouveau stream actif
+    if (!chatPanel.classList.contains('hidden')) {
+        loadChat(pseudo);
+    }
+}
+
+/**
+ * Charge le tchat Twitch pour le pseudo donné
+ */
+function loadChat(pseudo) {
+    chatContainer.innerHTML = '';
+
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.twitch.tv/embed/${pseudo}/chat?parent=localhost&parent=127.0.0.1&darkpopout`;
+    chatContainer.appendChild(iframe);
+
+    chatTitle.textContent = `💬 Tchat — ${pseudo}`;
+}
+
+/**
+ * Toggle l'affichage du panneau tchat
+ */
+function toggleChat() {
+    const isHidden = chatPanel.classList.contains('hidden');
+
+    if (isHidden) {
+        // Ouverture
+        chatPanel.classList.remove('hidden');
+        chatToggle.textContent = '💬 Masquer le tchat';
+        chatToggle.classList.add('active');
+
+        // Charger le tchat du stream actif (ou du premier si aucun n'est actif)
+        const pseudoToLoad = state.activePseudo || state.selectedStreamers[0];
+        if (pseudoToLoad) {
+            loadChat(pseudoToLoad);
+        }
+    } else {
+        // Fermeture — vider l'iframe pour libérer les ressources
+        chatPanel.classList.add('hidden');
+        chatToggle.textContent = '💬 Afficher le tchat';
+        chatToggle.classList.remove('active');
+        chatContainer.innerHTML = '';
+    }
 }
 
 /**
@@ -196,6 +253,12 @@ function clearGrid() {
     streamsGrid.className = '';
     state.players = [];
     state.activePseudo = null;
+
+    // Reset du tchat (fermeture + vidage de l'iframe)
+    chatPanel.classList.add('hidden');
+    chatToggle.textContent = '💬 Afficher le tchat';
+    chatToggle.classList.remove('active');
+    chatContainer.innerHTML = '';
 }
 
 // === Event listeners === //
@@ -216,7 +279,25 @@ streamersList.addEventListener('click', (event) => {
 });
 
 
-startButton.addEventListener('click', showViewer);
+startButton.addEventListener('click', () => {
+    // Joue le son de lancement (ne bloque pas si le navigateur refuse l'autoplay)
+    launchSound.currentTime = 0; // remet à zéro au cas où on relance plusieurs fois
+    launchSound.play().catch(error => {
+        console.warn('Audio playback was prevented:', error);
+    });
+
+    showViewer();
+});
+// Toggle du mode interaction (désactive l'overlay pour interagir avec les contrôles natifs Twitch)
+interactToggle.addEventListener('click', () => {
+    document.body.classList.toggle('interact-mode');
+    const isActive = document.body.classList.contains('interact-mode');
+    interactToggle.textContent = isActive
+        ? '🖱️ Mode interaction : ON'
+        : '🖱️ Mode interaction : OFF';
+    interactToggle.classList.toggle('active', isActive);
+});
+chatToggle.addEventListener('click', toggleChat);
 backButton.addEventListener('click', showSelection);
 
 // === Init === //

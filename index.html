@@ -51,11 +51,22 @@
 
     <!-- === Écran de visualisation === -->
     <section id="viewer-screen" class="hidden">
-       <div class="viewer-header">
+      <div class="viewer-header">
             <button id="back-button">← Retour à la sélection</button>
-            <span class="viewer-info">Cliquez sur un stream pour activer son audio</span>
+            <button id="interact-toggle" type="button">🖱️ Mode interaction : OFF</button>
+            <button id="chat-toggle" type="button">💬 Afficher le tchat</button>
+            <span class="viewer-info">Cliquez sur un stream pour le mettre en focus</span>
         </div>
-        <div id="streams-grid"></div>
+
+        <div id="viewer-content">
+            <div id="streams-grid"></div>
+            <aside id="chat-panel" class="hidden">
+                <div class="chat-header">
+                    <span id="chat-title">Tchat</span>
+                </div>
+                <div id="chat-container"></div>
+            </aside>
+        </div>
     </section>
 
     <script src="script.js"></script>
