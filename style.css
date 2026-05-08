@@ -142,3 +142,138 @@ button:disabled {
     padding: 1rem;
     font-size: 1.125rem;
 }
+/* === Viewer screen === */
+#viewer-screen {
+    min-height: calc(100vh - 4rem);
+    height: calc(100vh - 4rem);
+    display: flex;
+    flex-direction: column;
+}
+
+.viewer-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.viewer-info {
+    margin-left: auto;
+    color: #adadb8;
+    font-size: 0.875rem;
+}
+
+#play-all-button {
+    background-color: #00b050;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+#play-all-button:hover:not(:disabled) {
+    background-color: #008f3f;
+}
+
+#back-button {
+    background-color: #1f1f23;
+    color: #efeff1;
+    border: 1px solid #3a3a3d;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+#back-button:hover:not(:disabled) {
+    background-color: #3a3a3d;
+}
+
+.viewer-info {
+    color: #adadb8;
+    font-size: 0.875rem;
+}
+
+/* === Streams grid (responsive) === */
+#streams-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+/* 1 stream = pleine surface */
+#streams-grid.count-1 {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+}
+
+/* 2 streams = côte à côte */
+#streams-grid.count-2 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+/* 3 streams = 2 en haut + 1 en bas, ou layout 2x2 avec une case vide */
+#streams-grid.count-3 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+/* 4 streams = grille 2x2 parfaite */
+#streams-grid.count-4 {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+}
+
+.stream-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background-color: #000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.stream-container iframe {
+    width: 100% !important;
+    height: 100% !important;
+    border: none;
+    display: block;
+}
+.stream-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 50px; /* Laisse la barre de contrôles Twitch accessible */
+    z-index: 5;
+    cursor: pointer;
+    background-color: transparent;
+}
+.stream-label {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #efeff1;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 10;
+    pointer-events: none;
+}
+/* === Active stream highlight === */
+.stream-container {
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.stream-container.active {
+    box-shadow: 0 0 0 3px #9147ff;
+    z-index: 2;
+}
+
+.stream-container.active .stream-label {
+    background-color: #9147ff;
+}

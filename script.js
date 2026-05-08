@@ -1,23 +1,27 @@
 // === État de l'application ===
 const state = {
-    selectedStreamers: []
+    selectedStreamers: [],
+    players: [],          // Liste des objets Twitch.Player actifs
+    activePseudo: null    // Pseudo du stream actuellement audible
 };
 
 const MAX_STREAMERS = 4;
 
 // === Références DOM ===
+const selectionScreen = document.getElementById('selection-screen');
+const viewerScreen = document.getElementById('viewer-screen');
+
 const input = document.getElementById('streamer-input');
 const addButton = document.getElementById('add-button');
 const startButton = document.getElementById('start-button');
+const backButton = document.getElementById('back-button');
 const streamersList = document.getElementById('streamers-list');
 const counter = document.getElementById('counter');
 const errorMessage = document.getElementById('error-message');
+const streamsGrid = document.getElementById('streams-grid');
 
-// === Fonctions ===
+// === Fonctions UI === //
 
-/**
- * Affiche un message d'erreur pendant 3 secondes
- */
 function showError(message) {
     errorMessage.textContent = message;
     errorMessage.classList.remove('hidden');
@@ -26,17 +30,10 @@ function showError(message) {
     }, 3000);
 }
 
-/**
- * Met à jour l'affichage de la liste, du compteur et du bouton "Lancer"
- */
-function render() {
-    // Mise à jour du compteur
+function renderSelection() {
     counter.textContent = state.selectedStreamers.length;
-
-    // Mise à jour du bouton "Lancer"
     startButton.disabled = state.selectedStreamers.length === 0;
 
-    // Reconstruction de la liste
     streamersList.innerHTML = '';
     state.selectedStreamers.forEach(pseudo => {
         const li = document.createElement('li');
@@ -48,63 +45,142 @@ function render() {
     });
 }
 
-/**
- * Ajoute un streamer à la sélection après validation
- */
+// === Fonctions logique sélection === //
+
 function addStreamer() {
     const pseudo = input.value.trim().toLowerCase();
 
-    // Validation : champ vide
     if (pseudo === '') {
         showError('Veuillez entrer un pseudo Twitch.');
         return;
     }
-
-    // Validation : caractères Twitch valides (lettres, chiffres, underscore)
     if (!/^[a-z0-9_]{4,25}$/.test(pseudo)) {
-        showError('Pseudo invalide.');
+        showError('Pseudo invalide (4-25 caractères : lettres, chiffres, underscore).');
         return;
     }
-
-    // Validation : doublon
     if (state.selectedStreamers.includes(pseudo)) {
-        showError(`${pseudo} est déjà dans la sélection ! `);
+        showError(`${pseudo} est déjà dans la sélection.`);
         return;
     }
-
-    // Validation : maximum atteint
     if (state.selectedStreamers.length >= MAX_STREAMERS) {
-        showError(`Tu ne peux sélectionner que ${MAX_STREAMERS} streamers pour le moment.`);
+        showError(`Maximum ${MAX_STREAMERS} streamers.`);
         return;
     }
 
-    // Ajout
     state.selectedStreamers.push(pseudo);
     input.value = '';
-    render();
+    renderSelection();
+}
+
+function removeStreamer(pseudo) {
+    state.selectedStreamers = state.selectedStreamers.filter(p => p !== pseudo);
+    renderSelection();
+}
+
+// === Fonctions navigation entre écrans === //
+
+function showViewer() {
+    selectionScreen.classList.add('hidden');
+    viewerScreen.classList.remove('hidden');
+
+    // Attendre le prochain "frame" pour garantir que le DOM est rendu
+    // avant d'instancier les players Twitch (sinon erreur "style visibility")
+    requestAnimationFrame(() => {
+        buildGrid();
+    });
+}
+
+function showSelection() {
+    viewerScreen.classList.add('hidden');
+    selectionScreen.classList.remove('hidden');
+    clearGrid();
+}
+
+// === Fonctions grille de streams === //
+/**
+ * Construit la grille de streams avec overlay cliquable
+ */
+function buildGrid() {
+    // Reset
+    streamsGrid.innerHTML = '';
+    streamsGrid.className = '';
+    state.players = [];
+    state.activePseudo = null;
+
+    // Layout
+    const count = state.selectedStreamers.length;
+    streamsGrid.classList.add(`count-${count}`);
+
+    // Création des iframes
+    state.selectedStreamers.forEach(pseudo => {
+        const container = document.createElement('div');
+        container.className = 'stream-container';
+        container.dataset.pseudo = pseudo;
+
+        const label = document.createElement('span');
+        label.className = 'stream-label';
+        label.textContent = pseudo;
+
+        // Iframe Twitch native
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://player.twitch.tv/?channel=${pseudo}&parent=localhost&parent=127.0.0.1&autoplay=true`;
+        iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
+
+        // Overlay transparent qui capte les clics (l'iframe n'intercepte plus)
+        const overlay = document.createElement('div');
+        overlay.className = 'stream-overlay';
+
+        container.appendChild(iframe);
+        container.appendChild(overlay);
+        container.appendChild(label);
+        streamsGrid.appendChild(container);
+
+        state.players.push({ pseudo, iframe, container });
+
+        // Le clic est capté par l'overlay, plus par le container
+        overlay.addEventListener('click', () => {
+            setActiveStream(pseudo);
+        });
+    });
 }
 
 /**
- * Retire un streamer de la sélection
+ * Active visuellement un stream (bordure violette)
+ * Note V1 : pas de contrôle audio programmé — limitation technique des iframes Twitch.
+ * V2 : prévue avec backend Node.js pour piloter les players via Twitch.Player API.
  */
-function removeStreamer(pseudo) {
-    state.selectedStreamers = state.selectedStreamers.filter(p => p !== pseudo);
-    render();
+function setActiveStream(pseudo) {
+    state.activePseudo = pseudo;
+
+    state.players.forEach(({ pseudo: p, container }) => {
+        if (p === pseudo) {
+            container.classList.add('active');
+        } else {
+            container.classList.remove('active');
+        }
+    });
 }
 
-// === Event listeners ===
+/**
+ * Vide la grille (libère les ressources)
+ */
+function clearGrid() {
+    streamsGrid.innerHTML = '';
+    streamsGrid.className = '';
+    state.players = [];
+    state.activePseudo = null;
+}
 
-// Clic sur "Ajouter"
+// === Event listeners === //
+
 addButton.addEventListener('click', addStreamer);
 
-// Touche Entrée dans l'input = équivalent du bouton Ajouter
 input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         addStreamer();
     }
 });
 
-// Clic sur un bouton "Retirer" (event delegation)
 streamersList.addEventListener('click', (event) => {
     if (event.target.classList.contains('remove-button')) {
         const pseudo = event.target.dataset.pseudo;
@@ -112,11 +188,9 @@ streamersList.addEventListener('click', (event) => {
     }
 });
 
-// Clic sur "Lancer le multistream" — pour l'instant juste un log
-startButton.addEventListener('click', () => {
-    console.log('Lancement avec :', state.selectedStreamers);
-    alert(`Multistream à lancer avec : ${state.selectedStreamers.join(', ')}\n(L'écran de visualisation sera codé à l'étape 4)`);
-});
 
-// Premier render au chargement
-render();
+startButton.addEventListener('click', showViewer);
+backButton.addEventListener('click', showSelection);
+
+// === Init === //
+renderSelection();

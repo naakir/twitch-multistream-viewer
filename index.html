@@ -8,7 +8,7 @@
 </head>
 <body>
 
-    <!-- Écran de sélection -->
+    <!-- === Écran de sélection === -->
     <section id="selection-screen">
         <header>
             <h1>Twitch Multistream Viewer</h1>
@@ -33,6 +33,15 @@
         </div>
 
         <button id="start-button" disabled>Lancer le multistream</button>
+    </section>
+
+    <!-- === Écran de visualisation === -->
+    <section id="viewer-screen" class="hidden">
+       <div class="viewer-header">
+            <button id="back-button">← Retour à la sélection</button>
+            <span class="viewer-info">Cliquez sur un stream pour activer son audio</span>
+        </div>
+        <div id="streams-grid"></div>
     </section>
 
     <script src="script.js"></script>
