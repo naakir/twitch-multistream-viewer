@@ -7,14 +7,34 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Twitch Multistream Viewer</h1>
-    <p>Projet en construction 🚧</p>
-    <iframe
-        src="https://player.twitch.tv/?channel=samueletienne&parent=localhost&parent=127.0.0.1"
-        height="480"
-        width="854"
-        allowfullscreen>
-    </iframe>
+
+    <!-- Écran de sélection -->
+    <section id="selection-screen">
+        <header>
+            <h1>Twitch Multistream Viewer</h1>
+            <p class="subtitle">Regardez jusqu'à 4 streams Twitch simultanément</p>
+        </header>
+
+        <div class="add-streamer">
+            <input
+                type="text"
+                id="streamer-input"
+                placeholder="Pseudo Twitch (ex: samueletienne)"
+                autocomplete="off"
+            >
+            <button id="add-button">Ajouter</button>
+        </div>
+
+        <p id="error-message" class="error hidden"></p>
+
+        <div class="selected-list">
+            <h2>Sélection (<span id="counter">0</span>/4)</h2>
+            <ul id="streamers-list"></ul>
+        </div>
+
+        <button id="start-button" disabled>Lancer le multistream</button>
+    </section>
+
     <script src="script.js"></script>
 </body>
 </html>
