@@ -31,6 +31,16 @@ The project intentionally stays as a **pure frontend static app** (HTML, CSS, Ja
 - 🔄 **Two-screen navigation**: selection screen ↔ multistream viewer
 - 🎨 **Twitch-themed dark UI** matching the platform's official color palette
 
+### 🎬 Tips for clippers
+
+This tool is designed to help content clippers monitor multiple streams of the same event in parallel. To create a clip from any displayed stream:
+
+1. Activate **🖱️ Interaction mode** in the viewer header (this disables the click-capture overlay)
+2. Click the **scissors icon** in the bottom controls of the desired stream's Twitch player
+3. Twitch's native clip creator will open in a popup with the last 30 seconds ready to clip
+
+**Shortcut**: `Option + X` (Mac) or `Alt + X` (Windows/Linux) on a focused stream also triggers the clip creator.
+
 ### Tech Stack
 
 | Layer | Technology |
@@ -64,6 +74,9 @@ The project intentionally stays as a **pure frontend static app** (HTML, CSS, Ja
 
 Planned improvements for the next iteration:
 
+Planned improvements for the next iteration:
+
+- 🎬 **Native clip creation** — Create clips in 1 click directly from the app, without leaving the multistream view. Requires Node.js backend with Twitch OAuth integration ([see issue #1](https://github.com/naakir/twitch-multistream-viewer/issues/1))
 - 🔍 **Live search via Twitch Helix API** — find streamers and check their live status before adding them to the selection
 - 🎧 **Exclusive audio focus** — clicking a stream automatically mutes the others (requires backend Node.js to bypass iframe API limitations)
 - 💾 **localStorage for favorites** — save preferred streamers across sessions
@@ -106,6 +119,16 @@ Le projet reste volontairement une **application 100% frontend statique** (HTML,
 - 🔄 **Navigation à deux écrans** : sélection ↔ visualisation multistream
 - 🎨 **UI dark thème Twitch** reprenant la palette officielle de la plateforme
 
+### 🎬 Astuce pour les clippers
+
+Cet outil est conçu pour aider les créateurs de clips à monitorer plusieurs streams d'un même événement en parallèle. Pour créer un clip depuis n'importe quel stream affiché :
+
+1. Activez le **🖱️ Mode interaction** dans le header du viewer (cela désactive la couche de capture de clics)
+2. Cliquez sur l'**icône ciseaux** dans les contrôles natifs en bas du player Twitch désiré
+3. Le créateur de clips officiel Twitch s'ouvrira en popup avec les 30 dernières secondes prêtes à clipper
+
+**Raccourci** : `Option + X` (Mac) ou `Alt + X` (Windows/Linux) sur un stream en focus déclenche aussi le créateur de clip.
+
 ### Stack technique
 
 | Couche | Technologie |
@@ -139,10 +162,14 @@ Le projet reste volontairement une **application 100% frontend statique** (HTML,
 
 Améliorations prévues à venir  :
 
+Améliorations prévues pour la prochaine itération :
+
+- 🎬 **Création de clips native** — Créer des clips en 1 clic directement depuis l'app, sans quitter la vue multistream. Nécessite un backend Node.js avec intégration OAuth Twitch ([voir pb #1](https://github.com/naakir/twitch-multistream-viewer/issues/1))
 - 🔍 **Recherche live via l'API Twitch Helix** — trouver des streamers et vérifier leur statut live avant ajout à la sélection
-- 🎧 **Focus audio exclusif** — cliquer sur un stream mute automatiquement les autres
-- 💾 **localStorage pour favoris** — sauvegarder les streamers préférés entre sessions 
-- 🔗 **URL partageable** — encoder la sélection actuelle en query string (`?streamers=john,doe,tango`)
+- 🎧 **Focus audio exclusif** — cliquer sur un stream mute automatiquement les autres (nécessite un backend Node.js pour contourner les limitations de l'API iframe)
+- 💾 **localStorage pour favoris** — sauvegarder les streamers préférés entre sessions
+- 🔗 **URL partageable** — encoder la sélection actuelle en query string (`?streamers=alice,bob,charlie`)
+- 📱 **Layout mobile amélioré** pour l'orientation portrait
 
 ### Notes techniques
 

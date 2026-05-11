@@ -190,7 +190,7 @@ function buildGrid() {
 
 
         const iframe = document.createElement('iframe');
-        iframe.src = `https://player.twitch.tv/?channel=${pseudo}&parent=localhost&parent=127.0.0.1&autoplay=true`;
+        iframe.src = `https://player.twitch.tv/?channel=${pseudo}&parent=localhost&parent=127.0.0.1&parent=naakir.github.io&autoplay=true`;
         iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
 
         const overlay = document.createElement('div');
@@ -274,7 +274,7 @@ function loadChat(pseudo) {
     chatContainer.innerHTML = '';
 
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.twitch.tv/embed/${pseudo}/chat?parent=localhost&parent=127.0.0.1&darkpopout`;
+    iframe.src = `https://www.twitch.tv/embed/${pseudo}/chat?parent=localhost&parent=127.0.0.1&parent=naakir.github.io&darkpopout`;
     chatContainer.appendChild(iframe);
 
     chatTitle.textContent = `💬 Tchat — ${pseudo}`;

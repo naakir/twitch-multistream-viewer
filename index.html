@@ -11,9 +11,9 @@
 
     <!-- Meta tags pour le partage social (Open Graph) -->
     <meta property="og:title" content="Twitch Multistream Viewer">
-    <meta property="og:description" content="Watch up to 4 Twitch streams simultaneously with focused stream selection.">
+    <meta property="og:description" content="Watch up to 8 Twitch streams simultaneously with focused stream selection.">
     <meta property="og:type" content="website">
-    <meta name="description" content="Watch up to 4 Twitch streams simultaneously. Built with vanilla HTML, CSS, and JavaScript.">
+    <meta name="description" content="Watch up to 8 Twitch streams simultaneously. Built with vanilla HTML, CSS, and JavaScript.">
 
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
@@ -31,7 +31,7 @@
             <input
                 type="text"
                 id="streamer-input"
-                placeholder="Pseudo Twitch (ex: samueletienne)"
+                placeholder="Pseudo Twitch (ex: aminematue / gotaga)"
                 autocomplete="off"
             >
             <button id="add-button">Ajouter</button>
@@ -57,7 +57,7 @@
             <button id="back-button">← Retour à la sélection</button>
             <button id="interact-toggle" type="button">🖱️ Mode interaction : OFF</button>
             <button id="chat-toggle" type="button">💬 Afficher le Chat</button>
-            <span class="viewer-info">Cliquez sur un stream pour le focus · ⠿ Glissez le label pour réorganiser</span>
+            <span class="viewer-info">Cliquez sur un stream pour afficher le chat · ⠿ Glissez le label pour réorganiser</span>
         </div>
 
         <div id="viewer-content">
