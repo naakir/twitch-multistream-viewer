@@ -62,9 +62,10 @@ function renderSelection() {
 
     state.selectedStreamers.forEach(pseudo => {
         const li = document.createElement('li');
-        li.dataset.pseudo = pseudo;  // utile pour SortableJS
+        li.dataset.pseudo = pseudo;
+        li.title = 'Glissez pour réorganiser';
         li.innerHTML = `
-            <span>${pseudo}</span>
+            <span><span class="drag-icon">⠿</span> ${pseudo}</span>
             <button class="remove-button" data-pseudo="${pseudo}">Retirer</button>
         `;
         streamersList.appendChild(li);
@@ -208,8 +209,13 @@ function buildGrid() {
         });
     });
 
-    // Permet d'activer  le drag & drop sur la grille
+    // Activer le drag & drop sur la grille
     initSortableGrid();
+
+    // Chat affiché par défaut : charger le Chat du premier streamer
+    if (state.selectedStreamers.length > 0) {
+        loadChat(state.selectedStreamers[0]);
+    }
 }
 
 /**
@@ -261,14 +267,14 @@ function setActiveStream(pseudo) {
         }
     });
 
-    // Si le tchat est ouvert, le mettre à jour sur le nouveau stream actif
+    // Si le chat est ouvert, le mettre à jour sur le nouveau stream actif
     if (!chatPanel.classList.contains('hidden')) {
         loadChat(pseudo);
     }
 }
 
 /**
- * Charge le tchat Twitch pour le pseudo donné
+ * Charge le chat Twitch pour le pseudo donné
  */
 function loadChat(pseudo) {
     chatContainer.innerHTML = '';
@@ -277,32 +283,32 @@ function loadChat(pseudo) {
     iframe.src = `https://www.twitch.tv/embed/${pseudo}/chat?parent=localhost&parent=127.0.0.1&parent=naakir.github.io&darkpopout`;
     chatContainer.appendChild(iframe);
 
-    chatTitle.textContent = `💬 Tchat — ${pseudo}`;
+    chatTitle.textContent = `💬 chat — ${pseudo}`;
 }
 
 /**
- * Toggle l'affichage du panneau tchat
+ * Toggle l'affichage du panneau chat
  */
 function toggleChat() {
-    const isHidden = chatPanel.classList.contains('hidden');
+    // On lit l'état actuel depuis le panneau lui-même (source de vérité)
+    const isCurrentlyVisible = !chatPanel.classList.contains('hidden');
 
-    if (isHidden) {
+    if (isCurrentlyVisible) {
+        // Fermeture
+        chatPanel.classList.add('hidden');
+        chatToggle.textContent = '💬 Afficher le tchat';
+        chatToggle.classList.remove('active');
+        chatContainer.innerHTML = '';
+    } else {
         // Ouverture
         chatPanel.classList.remove('hidden');
         chatToggle.textContent = '💬 Masquer le tchat';
         chatToggle.classList.add('active');
 
-        // Charger le tchat du stream actif (ou du premier si aucun n'est actif)
         const pseudoToLoad = state.activePseudo || state.selectedStreamers[0];
         if (pseudoToLoad) {
             loadChat(pseudoToLoad);
         }
-    } else {
-        // Fermeture — vider l'iframe pour libérer les ressources
-        chatPanel.classList.add('hidden');
-        chatToggle.textContent = '💬 Afficher le tchat';
-        chatToggle.classList.remove('active');
-        chatContainer.innerHTML = '';
     }
 }
 
@@ -321,9 +327,9 @@ function clearGrid() {
     state.players = [];
     state.activePseudo = null;
 
-    // Reset du tchat
+    // Reset du chat
     chatPanel.classList.add('hidden');
-    chatToggle.textContent = '💬 Afficher le tchat';
+    chatToggle.textContent = '💬 Afficher le chat';
     chatToggle.classList.remove('active');
     chatContainer.innerHTML = '';
 }

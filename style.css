@@ -249,30 +249,7 @@ button:disabled {
     background-color: #008f3f;
 }
 
-#back-button,
-#interact-toggle {
-    background-color: #1f1f23;
-    color: #efeff1;
-    border: 1px solid #3a3a3d;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
 
-#back-button:hover:not(:disabled),
-#interact-toggle:hover:not(:disabled) {
-    background-color: #3a3a3d;
-}
-
-/* État actif du mode interaction */
-#interact-toggle.active {
-    background-color: #00b050;
-    border-color: #00b050;
-    color: white;
-}
-
-#interact-toggle.active:hover:not(:disabled) {
-    background-color: #008f3f;
-}
 
 .viewer-info {
     color: #adadb8;
@@ -404,19 +381,41 @@ body.interact-mode .stream-overlay {
     font-size: 0.875rem;
     line-height: 1.4;
 }
-/* Bouton toggle du chat */
+/* === Boutons du header du viewer (taille unifiée) === */
+#back-button,
+#interact-toggle,
 #chat-toggle {
     background-color: #1f1f23;
     color: #efeff1;
     border: 1px solid #3a3a3d;
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
+#back-button:hover:not(:disabled),
+#interact-toggle:hover:not(:disabled),
 #chat-toggle:hover:not(:disabled) {
     background-color: #3a3a3d;
 }
 
+/* État actif : Mode interaction → vert */
+#interact-toggle.active {
+    background-color: #00b050;
+    border-color: #00b050;
+    color: white;
+}
+
+#interact-toggle.active:hover:not(:disabled) {
+    background-color: #008f3f;
+}
+
+/* État actif : Tchat → violet Twitch */
 #chat-toggle.active {
     background-color: #9147ff;
     border-color: #9147ff;
@@ -477,6 +476,7 @@ body.is-dragging .stream-container iframe {
     transition: opacity 0.15s;
 }
 
-.stream-label:hover .drag-icon {
+.stream-label:hover .drag-icon,
+#streamers-list li:hover .drag-icon {
     opacity: 1;
 }
