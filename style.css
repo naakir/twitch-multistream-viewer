@@ -181,7 +181,7 @@ button:disabled {
     flex-direction: column;
 }
 
-/* Conteneur des streams + tchat */
+/* Conteneur des streams + chat */
 #viewer-content {
     flex: 1;
     display: flex;
@@ -194,7 +194,7 @@ button:disabled {
     flex: 1 1 auto;
 }
 
-/* Panneau tchat */
+/* Panneau de chat Twitch */
 #chat-panel {
     width: 340px;
     min-width: 340px;
@@ -362,7 +362,13 @@ body.interact-mode .stream-overlay {
     font-size: 0.875rem;
     font-weight: 600;
     z-index: 10;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: grab;
+    user-select: none;
+}
+
+.stream-label:active {
+    cursor: grabbing;
 }
 /* === Active stream highlight === */
 .stream-container {
@@ -398,7 +404,7 @@ body.interact-mode .stream-overlay {
     font-size: 0.875rem;
     line-height: 1.4;
 }
-/* Bouton toggle du tchat */
+/* Bouton toggle du chat */
 #chat-toggle {
     background-color: #1f1f23;
     color: #efeff1;
@@ -419,4 +425,58 @@ body.interact-mode .stream-overlay {
 
 #chat-toggle.active:hover:not(:disabled) {
     background-color: #772ce8;
+}
+/* === Drag & Drop === */
+
+/* Curseur "grab" sur les éléments draggables au repos */
+#streamers-list li:not(.empty-state) {
+    cursor: grab;
+}
+
+#streamers-list li:not(.empty-state):active {
+    cursor: grabbing;
+}
+
+.stream-container {
+    cursor: grab;
+}
+
+.stream-container:active {
+    cursor: grabbing;
+}
+
+/* Élément laissé à la position d'origine pendant le drag */
+.sortable-ghost {
+    opacity: 0.3;
+    background-color: #9147ff !important;
+}
+
+/* Élément qu'on est en train de faire glisser */
+.sortable-drag {
+    opacity: 0.9;
+}
+
+/* Élément temporairement déplacé pour montrer où le drag va atterrir */
+.sortable-chosen {
+    box-shadow: 0 0 0 2px #9147ff;
+}
+
+/*  Lorsqu'il y a un drag & drop sur la grille on va désactiver les iframes
+   pour qu'elles n'interceptent pas la souris (sinon crash) */
+body.is-dragging .stream-container iframe {
+    pointer-events: none;
+}
+/* Icône drag dans le label */
+.drag-icon {
+    display: inline-block;
+    margin-right: 0.25rem;
+    opacity: 0.6;
+    font-size: 1rem;
+    line-height: 1;
+    vertical-align: middle;
+    transition: opacity 0.15s;
+}
+
+.stream-label:hover .drag-icon {
+    opacity: 1;
 }

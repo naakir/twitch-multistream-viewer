@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +16,7 @@
     <meta name="description" content="Watch up to 4 Twitch streams simultaneously. Built with vanilla HTML, CSS, and JavaScript.">
 
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 </head>
 <body>
 
@@ -54,8 +56,8 @@
       <div class="viewer-header">
             <button id="back-button">← Retour à la sélection</button>
             <button id="interact-toggle" type="button">🖱️ Mode interaction : OFF</button>
-            <button id="chat-toggle" type="button">💬 Afficher le tchat</button>
-            <span class="viewer-info">Cliquez sur un stream pour le mettre en focus</span>
+            <button id="chat-toggle" type="button">💬 Afficher le Chat</button>
+            <span class="viewer-info">Cliquez sur un stream pour le focus · ⠿ Glissez le label pour réorganiser</span>
         </div>
 
         <div id="viewer-content">

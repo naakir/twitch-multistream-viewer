@@ -4,9 +4,9 @@ const state = {
     players: [],          // Liste des objets Twitch.Player actifs
     activePseudo: null    // Pseudo du stream actuellement audible
 };
-// On fait jouer un son au lancement du multistream (son léger - fun)
+// On fait jouer un son au lancement du multistream (pour la vanne)
 const launchSound = new Audio('assets/launch-sound.mp3');
-launchSound.volume = 0.15; // Volume modéré 
+launchSound.volume = 0.25; // Volume modéré 
 
 const MAX_STREAMERS = 8;
 
@@ -52,7 +52,6 @@ function renderSelection() {
 
     streamersList.innerHTML = '';
 
-    // Empty state...
     if (state.selectedStreamers.length === 0) {
         const emptyState = document.createElement('li');
         emptyState.className = 'empty-state';
@@ -63,11 +62,38 @@ function renderSelection() {
 
     state.selectedStreamers.forEach(pseudo => {
         const li = document.createElement('li');
+        li.dataset.pseudo = pseudo;  // utile pour SortableJS
         li.innerHTML = `
             <span>${pseudo}</span>
             <button class="remove-button" data-pseudo="${pseudo}">Retirer</button>
         `;
         streamersList.appendChild(li);
+    });
+
+    // Initialiser SortableJS sur la liste (une fois les li créés)
+    initSortableSelection();
+}
+/**
+ * pour activer le drag & drop sur la liste de sélection
+ */
+let sortableSelectionInstance = null;
+function initSortableSelection() {
+    // Détruit l'instance précédente si elle existe (pour éviter les doublons)
+    if (sortableSelectionInstance) {
+        sortableSelectionInstance.destroy();
+    }
+
+    sortableSelectionInstance = Sortable.create(streamersList, {
+        animation: 150,
+        filter: '.empty-state, .remove-button',  // exclure ces éléments du drag
+        preventOnFilter: false,                  // permettre les clics sur .remove-button
+        onEnd: (event) => {
+            // Synchroniser le state avec le nouvel ordre du DOM
+            const newOrder = Array.from(streamersList.querySelectorAll('li[data-pseudo]'))
+                .map(li => li.dataset.pseudo);
+            state.selectedStreamers = newOrder;
+            console.log('[DRAG] Nouvel ordre :', state.selectedStreamers);
+        }
     });
 }
 
@@ -138,7 +164,7 @@ function showSelection() {
 
 // === Fonctions grille de streams === //
 /**
- * Construit la grille de streams avec overlay cliquable
+ * Grille de streams avec overlay cliquable
  */
 function buildGrid() {
     // Reset
@@ -151,22 +177,22 @@ function buildGrid() {
     const count = state.selectedStreamers.length;
     streamsGrid.classList.add(`count-${count}`);
 
-    // Création des iframes
+    // Création des iframes pour les streams 
     state.selectedStreamers.forEach(pseudo => {
         const container = document.createElement('div');
         container.className = 'stream-container';
         container.dataset.pseudo = pseudo;
 
-        const label = document.createElement('span');
+       const label = document.createElement('span');
         label.className = 'stream-label';
-        label.textContent = pseudo;
+        label.title = 'Glissez pour réorganiser';
+        label.innerHTML = `<span class="drag-icon">⠿</span> ${pseudo}`;
 
-        // Iframe Twitch native
+
         const iframe = document.createElement('iframe');
         iframe.src = `https://player.twitch.tv/?channel=${pseudo}&parent=localhost&parent=127.0.0.1&autoplay=true`;
         iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
 
-        // Overlay transparent qui capte les clics (l'iframe n'intercepte plus)
         const overlay = document.createElement('div');
         overlay.className = 'stream-overlay';
 
@@ -177,16 +203,51 @@ function buildGrid() {
 
         state.players.push({ pseudo, iframe, container });
 
-        // Le clic est capté par l'overlay, plus par le container
         overlay.addEventListener('click', () => {
             setActiveStream(pseudo);
         });
+    });
+
+    // Permet d'activer  le drag & drop sur la grille
+    initSortableGrid();
+}
+
+/**
+ * Activer le drag & drop sur la grille de streams
+ */
+let sortableGridInstance = null;
+function initSortableGrid() {
+    if (sortableGridInstance) {
+        sortableGridInstance.destroy();
+    }
+
+    sortableGridInstance = Sortable.create(streamsGrid, {
+        animation: 200,
+        // Drag handle : on n'utilise que le label pour drag
+        // (sinon conflit avec le clic = focus mode)
+        handle: '.stream-label',
+        onStart: () => {
+            document.body.classList.add('is-dragging');
+        },
+        onEnd: (event) => {
+            document.body.classList.remove('is-dragging');
+
+            // Synchroniser state.selectedStreamers ET state.players avec le nouvel ordre du DOM
+            const newOrder = Array.from(streamsGrid.querySelectorAll('.stream-container'))
+                .map(c => c.dataset.pseudo);
+
+            state.selectedStreamers = newOrder;
+            state.players = newOrder.map(pseudo =>
+                state.players.find(p => p.pseudo === pseudo)
+            );
+            console.log('[DRAG GRID] Nouvel ordre :', state.selectedStreamers);
+        }
     });
 }
 
 /**
  * Active visuellement un stream (bordure violette)
- * Note V1 : pas de contrôle audio programmé — limitation technique des iframes Twitch.
+ * Note V1 : pas de contrôle audio programmé pour le moment — limitation technique des iframes Twitch.
  * V2 : prévue avec backend Node.js pour piloter les players via Twitch.Player API.
  */
 function setActiveStream(pseudo) {
@@ -249,12 +310,18 @@ function toggleChat() {
  * Vide la grille (libère les ressources)
  */
 function clearGrid() {
+    // Détruire l'instance SortableJS avant de vider la grille
+    if (sortableGridInstance) {
+        sortableGridInstance.destroy();
+        sortableGridInstance = null;
+    }
+
     streamsGrid.innerHTML = '';
     streamsGrid.className = '';
     state.players = [];
     state.activePseudo = null;
 
-    // Reset du tchat (fermeture + vidage de l'iframe)
+    // Reset du tchat
     chatPanel.classList.add('hidden');
     chatToggle.textContent = '💬 Afficher le tchat';
     chatToggle.classList.remove('active');
