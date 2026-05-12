@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+._*
+
+# Editor configs
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local environment files (future-proof)
+.env
+.env.local
+.env.*.local
+
+# Notes/scratch personnels
+notes/
+TODO.md
+SCRATCH.md
