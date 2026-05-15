@@ -10,6 +10,15 @@ launchSound.volume = 0.25; // Volume modéré
 
 const MAX_STREAMERS = 8;
 
+// Suggestions de streamers populaires (curation manuelle FR en local pour le moment — V2 : remplacer par l'API Helix /streams)
+const SUGGESTED_STREAMERS = [
+    { pseudo: 'gotaga',        avatar: 'assets/avatars/gotaga.png' },
+    { pseudo: 'domingo',       avatar: 'assets/avatars/domingo.png' },
+    { pseudo: 'aminematue',    avatar: 'assets/avatars/aminematue.png' },
+    { pseudo: 'anyme023',      avatar: 'assets/avatars/anyme023.png' },
+    { pseudo: 'byilhann',      avatar: 'assets/avatars/byilhann.png' },
+    { pseudo: 'kamet0',        avatar: 'assets/avatars/kamet0.png' }
+];
 // === Références DOM ===
 const selectionScreen = document.getElementById('selection-screen');
 const viewerScreen = document.getElementById('viewer-screen');
@@ -22,6 +31,7 @@ const streamersList = document.getElementById('streamers-list');
 const counter = document.getElementById('counter');
 const errorMessage = document.getElementById('error-message');
 const streamsGrid = document.getElementById('streams-grid');
+const suggestionsList = document.getElementById('suggestions-list');
 const perfWarning = document.getElementById('perf-warning');
 const interactToggle = document.getElementById('interact-toggle');
 const chatToggle = document.getElementById('chat-toggle');
@@ -71,8 +81,69 @@ function renderSelection() {
         streamersList.appendChild(li);
     });
 
-    // Initialiser SortableJS sur la liste (une fois les li créés)
+  // Initialiser SortableJS sur la liste (une fois les li créés)
     initSortableSelection();
+
+    // Mettre à jour les suggestions pour refléter l'état actuel
+    renderSuggestions();
+}
+/**
+ * Génère les cards de suggestions de streamers
+ * Reflète l'état actuel : déjà sélectionné = card verte avec ✓, max atteint = désactivé
+ */
+function renderSuggestions() {
+    suggestionsList.innerHTML = '';
+
+    SUGGESTED_STREAMERS.forEach(({ pseudo, avatar }) => {
+        const isSelected = state.selectedStreamers.includes(pseudo);
+        const isMaxReached = state.selectedStreamers.length >= MAX_STREAMERS && !isSelected;
+
+        const card = document.createElement('button');
+        card.className = 'suggestion-card';
+        card.type = 'button';
+        card.dataset.pseudo = pseudo;
+
+        if (isSelected) {
+            card.classList.add('selected');
+        }
+        if (isMaxReached) {
+            card.disabled = true;
+            card.title = `Maximum ${MAX_STREAMERS} streamers atteint`;
+        }
+
+       card.innerHTML = `
+            <img class="suggestion-avatar" src="${avatar}" alt="${pseudo}">
+            <div class="suggestion-info">
+                <span class="suggestion-pseudo">${pseudo}</span>
+            </div>
+            ${isSelected ? '<span class="suggestion-check">✓</span>' : ''}
+        `;
+
+        // Clic : ajoute le streamer à la sélection (ou ne fait rien si déjà sélectionné)
+        card.addEventListener('click', () => {
+            if (isSelected) return; // protection : pas d'action si déjà ajouté
+            addSuggestedStreamer(pseudo);
+        });
+
+        suggestionsList.appendChild(card);
+    });
+}
+
+/**
+ * Ajoute un streamer suggéré à la sélection (bypass de l'input)
+ * Réutilise les validations max et duplicate de addStreamer
+ */
+function addSuggestedStreamer(pseudo) {
+    if (state.selectedStreamers.includes(pseudo)) {
+        return;
+    }
+    if (state.selectedStreamers.length >= MAX_STREAMERS) {
+        showError(`Maximum ${MAX_STREAMERS} streamers.`);
+        return;
+    }
+
+    state.selectedStreamers.push(pseudo);
+    renderSelection();
 }
 /**
  * pour activer le drag & drop sur la liste de sélection
@@ -375,3 +446,4 @@ backButton.addEventListener('click', showSelection);
 
 // === Init === //
 renderSelection();
+renderSuggestions();
