@@ -10,15 +10,35 @@ launchSound.volume = 0.25; // Volume modéré
 
 const MAX_STREAMERS = 8;
 
-// Suggestions de streamers populaires (curation manuelle FR en local pour le moment — V2 : remplacer par l'API Helix /streams)
-const SUGGESTED_STREAMERS = [
-    { pseudo: 'gotaga',        avatar: 'assets/avatars/gotaga.png' },
-    { pseudo: 'domingo',       avatar: 'assets/avatars/domingo.png' },
-    { pseudo: 'aminematue',    avatar: 'assets/avatars/aminematue.png' },
-    { pseudo: 'anyme023',      avatar: 'assets/avatars/anyme023.png' },
-    { pseudo: 'byilhann',      avatar: 'assets/avatars/byilhann.png' },
-    { pseudo: 'kamet0',        avatar: 'assets/avatars/kamet0.png' }
+// Pool complet de streamers suggérés (9 au total et 6 affichés aléatoirement à chaque chargement de page)
+const ALL_SUGGESTED_STREAMERS = [
+    { pseudo: 'gotaga',         avatar: 'assets/avatars/gotaga.png' },
+    { pseudo: 'domingo',        avatar: 'assets/avatars/domingo.png' },
+    { pseudo: 'aminematue',     avatar: 'assets/avatars/aminematue.png' },
+    { pseudo: 'anyme023',       avatar: 'assets/avatars/anyme023.png' },
+    { pseudo: 'byilhann',       avatar: 'assets/avatars/byilhann.png' },
+    { pseudo: 'kamet0',         avatar: 'assets/avatars/kamet0.png' },
+    { pseudo: 'pauleta_twitch', avatar: 'assets/avatars/pauleta_twitch.png' },
+    { pseudo: 'maghla',         avatar: 'assets/avatars/maghla.png' },
+    { pseudo: 'qassimiento',    avatar: 'assets/avatars/qassimiento.png' }
 ];
+
+const SUGGESTIONS_DISPLAY_COUNT = 6;
+
+/**
+ * Sélectionne N éléments aléatoires d'un tableau (algorithme Fisher-Yates)
+ */
+function getRandomSelection(array, count) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, count);
+}
+
+// Sélection aléatoire générée une seule fois au chargement de la page
+const SUGGESTED_STREAMERS = getRandomSelection(ALL_SUGGESTED_STREAMERS, SUGGESTIONS_DISPLAY_COUNT);
 // === Références DOM ===
 const selectionScreen = document.getElementById('selection-screen');
 const viewerScreen = document.getElementById('viewer-screen');
@@ -62,31 +82,29 @@ function renderSelection() {
 
     streamersList.innerHTML = '';
 
-    if (state.selectedStreamers.length === 0) {
+   if (state.selectedStreamers.length === 0) {
         const emptyState = document.createElement('li');
         emptyState.className = 'empty-state';
         emptyState.textContent = 'Aucun streamer ajouté. Commencez par taper un pseudo ci-dessus.';
         streamersList.appendChild(emptyState);
-        return;
+    } else {
+        state.selectedStreamers.forEach(pseudo => {
+            const li = document.createElement('li');
+            li.dataset.pseudo = pseudo;
+            li.title = 'Glissez pour réorganiser';
+            li.innerHTML = `
+                <span><span class="drag-icon">⠿</span> ${pseudo}</span>
+                <button class="remove-button" data-pseudo="${pseudo}">Retirer</button>
+            `;
+            streamersList.appendChild(li);
+        });
     }
 
-    state.selectedStreamers.forEach(pseudo => {
-        const li = document.createElement('li');
-        li.dataset.pseudo = pseudo;
-        li.title = 'Glissez pour réorganiser';
-        li.innerHTML = `
-            <span><span class="drag-icon">⠿</span> ${pseudo}</span>
-            <button class="remove-button" data-pseudo="${pseudo}">Retirer</button>
-        `;
-        streamersList.appendChild(li);
-    });
-
-  // Initialiser SortableJS sur la liste (une fois les li créés)
+    // Toujours exécuté, quel que soit l'état de la liste
     initSortableSelection();
-
-    // Mettre à jour les suggestions pour refléter l'état actuel
     renderSuggestions();
 }
+
 /**
  * Génère les cards de suggestions de streamers
  * Reflète l'état actuel : déjà sélectionné = card verte avec ✓, max atteint = désactivé
@@ -119,10 +137,12 @@ function renderSuggestions() {
             ${isSelected ? '<span class="suggestion-check">✓</span>' : ''}
         `;
 
-        // Clic : ajoute le streamer à la sélection (ou ne fait rien si déjà sélectionné)
-        card.addEventListener('click', () => {
-            if (isSelected) return; // protection : pas d'action si déjà ajouté
-            addSuggestedStreamer(pseudo);
+      card.addEventListener('click', () => {
+            if (isSelected) {
+                removeStreamer(pseudo);
+            } else {
+                addSuggestedStreamer(pseudo);
+            }
         });
 
         suggestionsList.appendChild(card);
