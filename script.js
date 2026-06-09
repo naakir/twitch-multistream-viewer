@@ -61,6 +61,16 @@ const chatTitle = document.getElementById('chat-title');
 
 // === Fonctions UI === //
 
+/**
+ * Échappe les caractères HTML dangereux pour prévenir les injections XSS
+ * Utilisé partout où du contenu utilisateur est inséré dans le DOM via innerHTML
+ */
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 function showError(message) {
     errorMessage.textContent = message;
     errorMessage.classList.remove('hidden');
@@ -190,10 +200,14 @@ function initSortableSelection() {
 }
 
     state.selectedStreamers.forEach(pseudo => {
+        const safe = escapeHtml(pseudo);
+
         const li = document.createElement('li');
+        li.dataset.pseudo = pseudo;
+        li.title = 'Glissez pour réorganiser';
         li.innerHTML = `
-            <span>${pseudo}</span>
-            <button class="remove-button" data-pseudo="${pseudo}">Retirer</button>
+            <span><span class="drag-icon">⠿</span> ${safe}</span>
+            <button class="remove-button" data-pseudo="${safe}">Retirer</button>
         `;
         streamersList.appendChild(li);
     });
@@ -275,14 +289,17 @@ function buildGrid() {
         container.className = 'stream-container';
         container.dataset.pseudo = pseudo;
 
-       const label = document.createElement('span');
+       const safe = escapeHtml(pseudo);
+
+        const label = document.createElement('span');
         label.className = 'stream-label';
         label.title = 'Glissez pour réorganiser';
-        label.innerHTML = `<span class="drag-icon">⠿</span> ${pseudo}`;
+        label.innerHTML = `<span class="drag-icon">⠿</span> ${safe}`;
 
 
         const iframe = document.createElement('iframe');
-        iframe.src = `https://player.twitch.tv/?channel=${pseudo}&parent=localhost&parent=127.0.0.1&parent=naakir.github.io&autoplay=true`;
+        const encodedPseudo = encodeURIComponent(pseudo);
+        iframe.src = `https://player.twitch.tv/?channel=${encodedPseudo}&parent=localhost&parent=127.0.0.1&parent=naakir.github.io&autoplay=true`;
         iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
 
         const overlay = document.createElement('div');
@@ -371,7 +388,8 @@ function loadChat(pseudo) {
     chatContainer.innerHTML = '';
 
     const iframe = document.createElement('iframe');
-    iframe.src = `https://www.twitch.tv/embed/${pseudo}/chat?parent=localhost&parent=127.0.0.1&parent=naakir.github.io&darkpopout`;
+    const encodedPseudo = encodeURIComponent(pseudo);
+    iframe.src = `https://www.twitch.tv/embed/${encodedPseudo}/chat?parent=localhost&parent=127.0.0.1&parent=naakir.github.io&darkpopout`;
     chatContainer.appendChild(iframe);
 
     chatTitle.textContent = `💬 chat — ${pseudo}`;
@@ -427,11 +445,23 @@ function clearGrid() {
 
 // === Event listeners === //
 
-addButton.addEventListener('click', addStreamer);
+// Debounce pour éviter le spam de clics
+let addDebounceTimer = null;
+addButton.addEventListener('click', () => {
+    if (addDebounceTimer) return;
+    addStreamer();
+    addDebounceTimer = setTimeout(() => {
+        addDebounceTimer = null;
+    }, 200);
+});
 
 input.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
+        if (addDebounceTimer) return;
         addStreamer();
+        addDebounceTimer = setTimeout(() => {
+            addDebounceTimer = null;
+        }, 200);
     }
 });
 

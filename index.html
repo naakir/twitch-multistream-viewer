@@ -7,12 +7,14 @@
     <title>Twitch Multistream Viewer</title>
 
     <!-- Favicon (emoji TV en png inline) -->
-    <link rel="icon" type="image/png+xml" href="assets/favicon.png">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
 
     <!-- Meta tags pour le partage social (Open Graph) -->
     <meta property="og:title" content="Twitch Multistream Viewer">
     <meta property="og:description" content="Watch up to 8 Twitch streams simultaneously with focused stream selection.">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="https://naakir.github.io/twitch-multistream-viewer/docs/demo.gif">
+    <meta property="og:url" content="https://naakir.github.io/twitch-multistream-viewer/">
     <meta name="description" content="Watch up to 8 Twitch streams simultaneously. Built with vanilla HTML, CSS, and JavaScript.">
 
     <link rel="stylesheet" href="style.css">
@@ -63,7 +65,7 @@
             <button id="back-button">← Retour à la sélection de stream </button>
             <button id="interact-toggle" type="button">🖱️ Mode interaction : OFF</button>
             <button id="chat-toggle" type="button" class="active">💬 Masquer le chat</button>
-            <span class="viewer-info">Cliquez sur un stream pour rafraîchir le chat · ⠿ Glissez pour réorganiser les streams · Mode Interaction : à utiliser pour gérer les messages spécifiques sur le stream (ex : audience mature -> continuer à regarder)   </span>
+            <span class="viewer-info">Cliquez pour le focus · ⠿ Glissez le label pour réorganiser</span>
         </div>
 
         <div id="viewer-content">
