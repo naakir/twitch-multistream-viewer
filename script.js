@@ -99,15 +99,17 @@ function renderSelection() {
         streamersList.appendChild(emptyState);
     } else {
         state.selectedStreamers.forEach(pseudo => {
-            const li = document.createElement('li');
-            li.dataset.pseudo = pseudo;
-            li.title = 'Glissez pour réorganiser';
-            li.innerHTML = `
-                <span><span class="drag-icon">⠿</span> ${pseudo}</span>
-                <button class="remove-button" data-pseudo="${pseudo}">Retirer</button>
-            `;
-            streamersList.appendChild(li);
-        });
+        const safe = escapeHtml(pseudo);
+
+        const li = document.createElement('li');
+        li.dataset.pseudo = pseudo;
+        li.title = 'Glissez pour réorganiser';
+        li.innerHTML = `
+            <span><span class="drag-icon">⠿</span> ${safe}</span>
+            <button class="remove-button" data-pseudo="${safe}">Retirer</button>
+        `;
+        streamersList.appendChild(li);
+    });
     }
 
     // Toujours exécuté, quel que soit l'état de la liste

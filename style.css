@@ -580,3 +580,195 @@ body.is-dragging .stream-container iframe {
         grid-template-columns: repeat(2, 1fr);
     }
 }
+
+/* ========================================================
+   LE RESPONSIVE MOBILE 
+   ======================================================== */
+
+/* === Tablette / petit écran (< 900px) === */
+@media (max-width: 900px) {
+
+    /* Grilles du viewer : max 2 colonnes */
+    #streams-grid.count-3,
+    #streams-grid.count-4 {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+    }
+
+    #streams-grid.count-5,
+    #streams-grid.count-6 {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+    }
+
+    #streams-grid.count-7,
+    #streams-grid.count-8 {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+    }
+
+    /* Tchat sidebar plus étroite */
+    #chat-panel {
+        width: 280px;
+        min-width: 280px;
+    }
+}
+
+/* === Mobile (< 768px) === */
+@media (max-width: 768px) {
+
+    /* --- Global --- */
+    body {
+        padding: 1rem;
+    }
+
+    /* --- Header --- */
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        font-size: 0.875rem;
+    }
+
+    /* --- Écran de sélection --- */
+    #selection-screen {
+        max-width: 100%;
+    }
+
+    /* Input + bouton empilés */
+    .add-streamer {
+        flex-direction: column;
+    }
+
+    #streamer-input {
+        width: 100%;
+    }
+
+    /* Suggestions en 2 colonnes */
+    #suggestions-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Bouton "Lancer" reste full width */
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    /* --- Écran du viewer --- */
+
+    /* Le viewer prend toute la hauteur dispo */
+    #viewer-screen {
+        height: auto;
+        min-height: calc(100vh - 2rem);
+    }
+
+    /* Boutons header : wrap + compacts */
+    .viewer-header {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    #back-button,
+    #interact-toggle,
+    #chat-toggle {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+        height: 32px;
+    }
+
+    /* Texte d'aide masqué sur mobile (trop long) */
+    .viewer-info {
+        display: none;
+    }
+
+    /* Layout streams + chat : passage en colonne */
+    #viewer-content {
+        flex-direction: column;
+    }
+
+    /* Grille : 1 colonne pour tout */
+    #streams-grid.count-1,
+    #streams-grid.count-2,
+    #streams-grid.count-3,
+    #streams-grid.count-4,
+    #streams-grid.count-5,
+    #streams-grid.count-6,
+    #streams-grid.count-7,
+    #streams-grid.count-8 {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
+
+    /* Chaque stream en ratio 16:9 fixe pour lisibilité */
+    .stream-container {
+        min-height: unset;
+        aspect-ratio: 16 / 9;
+    }
+
+    /* Tchat : full width sous la grille au lieu de sidebar */
+    #chat-panel {
+        width: 100%;
+        min-width: unset;
+        height: 400px;
+    }
+
+    /* Labels plus petits */
+    .stream-label {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* === Petit mobile (< 480px) === */
+@media (max-width: 480px) {
+
+    /* Titre encore plus compact */
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    /* Suggestions en 2 colonnes compactes */
+    .suggestion-card {
+        padding: 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .suggestion-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .suggestion-pseudo {
+        font-size: 0.85rem;
+    }
+
+    .suggestion-category {
+        font-size: 0.7rem;
+    }
+
+    /* Boutons header encore plus compacts */
+    #back-button,
+    #interact-toggle,
+    #chat-toggle {
+        font-size: 0.7rem;
+        padding: 0.35rem 0.5rem;
+        height: 28px;
+    }
+
+    /* Tchat légèrement moins haut */
+    #chat-panel {
+        height: 350px;
+    }
+
+    /* Liste de sélection : pseudo + bouton retirer plus compacts */
+    #streamers-list li {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.875rem;
+    }
+
+    .remove-button {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.75rem;
+    }
+}
